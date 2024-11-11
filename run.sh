@@ -1,10 +1,4 @@
 #! /bin/sh
-
-
-
-
-
-
  # Check if --ssh flag is present
 use_ssh=false
 for arg in "$@"; do
@@ -21,7 +15,7 @@ if [ "$use_ssh" == true ]; then
 fi
 
 # Check if correct number of arguments is provided when --ssh is used
-if [ "$use_ssh" == true ] && [ "$#" -ne 3 ]; then
+if [ "$use_ssh" == true ] && [ "$#" -ne 4 ]; then
     echo "Usage: $0 --ssh <host> <remote_path> <local_path>"
     exit 1
 fi
