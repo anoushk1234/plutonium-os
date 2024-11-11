@@ -1,34 +1,39 @@
 #! /bin/sh
- # Check if --ssh flag is present
-use_ssh=false
-for arg in "$@"; do
-    if [ "$arg" == "--ssh" ]; then
-        use_ssh=true
-        break
+
+
+# Check for the presence of --ssh or --nossh flags
+if [[ "$1" == "--ssh" ]]; then
+    # Check if exactly three arguments are provided
+    if [ "$#" -ne 4 ]; then
+        echo "Usage: $0 --ssh <host> <remote_path> <local_path>"
+        exit 1
     fi
-done
 
-# Remove --ssh flag from the positional parameters if found
-if [ "$use_ssh" == true ]; then
-    # Shift positional parameters to remove --ssh
-    set -- "${@/--ssh/}"
-fi
+    # Assign arguments to variables
+    host=$2
+    remote_path=$3
+    local_path=$4
 
-# Check if correct number of arguments is provided when --ssh is used
-if [ "$use_ssh" == true ] && [ "$#" -ne 4 ]; then
-    echo "Usage: $0 --ssh <host> <remote_path> <local_path>"
-    exit 1
-fi
-
-if [ "$use_ssh" == true ]; then
-    host=$1
-    remote_path=$2
-    local_path=$3
-    echo $host
+    # Example operation (e.g., using scp)
     echo "Using SSH to copy file from $host:$remote_path to $local_path"
-   scp $host:$remote_path $local_path && qemu-system-i386 -cdrom $local_path
+    scp "$host:$remote_path" "$local_path" && qemu-system-i386 -cdrom $local_path
+
+elif [[ "$1" == "--nossh" ]]; then
+    # Check if exactly one argument is provided
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: $0 --nossh <file_path>"
+        exit 1
+    fi
+
+    # Assign argument to variable
+    file_path=$2
+
+    # Example operation without SSH
+    echo "Handling file locally at $file_path"
+
+    qemu-system-i386 -nographic -display curses -cdrom $file_path
 else
-    echo "No --ssh flag provided. Skipping SSH operations."
-    qemu-system-i386 -nographic -display curses -cdrom *.iso
+    echo "Usage: $0 --ssh <host> <remote_path> <local_path> | --nossh <file_path>"
+    exit 1
 fi
 
