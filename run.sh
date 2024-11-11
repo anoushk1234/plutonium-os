@@ -24,7 +24,7 @@ if [ "$use_ssh" == true ]; then
     host=$1
     remote_path=$2
     local_path=$3
-
+    echo $host
     echo "Using SSH to copy file from $host:$remote_path to $local_path"
    scp $host:$remote_path $local_path && qemu-system-i386 -cdrom $local_path
 else
