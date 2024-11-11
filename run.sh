@@ -31,7 +31,7 @@ elif [[ "$1" == "--nossh" ]]; then
     # Example operation without SSH
     echo "Handling file locally at $file_path"
 
-    qemu-system-i386 -nographic -display curses -cdrom $file_path
+    qemu-system-i386 -kernel $file_path
 else
     echo "Usage: $0 --ssh <host> <remote_path> <local_path> | --nossh <file_path>"
     exit 1
